@@ -137,7 +137,7 @@ class App:
         maximum_payment = payment_annuity(null_pv, monthly_discount_rate, number_periods)
         price_of_property = round(present_value_annuity(maximum_payment, mortgage_rate, number_periods) + down_payment)
         
-        self.result_label.configure(text=f'The Price of Property is: {price_of_property}')
+        self.result_label.configure(text=f'The Maximum Price of Property is: {price_of_property}')
 
 if __name__ == "__main__":
     root = tk.Tk()
