@@ -1,5 +1,6 @@
 from finance_calculator import *
 import tkinter as tk
+from cash_flows import *
 from tkinter import ttk
 from tkinter import messagebox
 
