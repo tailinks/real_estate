@@ -1,4 +1,4 @@
-from finance import *
+from finance_calculator import *
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
