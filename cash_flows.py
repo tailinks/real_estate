@@ -50,5 +50,5 @@ class annuity:
 
 class perpetuity(annuity):
     def __init__(self, amount: float, time_frame="Y") -> None:
-        super().__init__(amount, 999 * time_frame_conversion[time_frame], time_frame)
+        super().__init__(amount, 1000 * time_frame_conversion[time_frame], time_frame)
     
