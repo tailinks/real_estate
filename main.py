@@ -84,24 +84,24 @@ class App:
     def calculate_present_value(self):
         property_price = float(self.property_price.get())
         down_payment = float(self.down_payment.get())
-        discount_rate = interest_rate(float(self.discount_rate.get()))
-        mortgage_rate = interest_rate(float(self.mortgage_rate.get()))
+        discount_rate = InterestRate(float(self.discount_rate.get()))
+        mortgage_rate = InterestRate(float(self.mortgage_rate.get()))
         mortgage_length = int(self.mortgage_length.get())
         rent_amount = float(self.rent_amount.get())
-        rent_growth = interest_rate(float(self.rent_growth.get()))
+        rent_growth = InterestRate(float(self.rent_growth.get()))
         maintenance_costs = float(self.maintenance_cost.get())
-        costs_growth = interest_rate(float(self.costs_growth.get()))
+        costs_growth = InterestRate(float(self.costs_growth.get()))
         
          #Do the calculations and store the result
         
         number_periods_mortgage = mortgage_length*12
         
         mortgage_payment = payment_annuity(property_price-down_payment, mortgage_rate.rate_in("M"), number_periods_mortgage)
-        mortgage = annuity(-mortgage_payment, number_periods_mortgage,time_frame="M", )
+        mortgage = Annuity(-mortgage_payment, number_periods_mortgage,time_frame="M", )
         
-        maintenance = perpetuity(-maintenance_costs, cash_flow_growth=costs_growth)
+        maintenance = Perpetuity(-maintenance_costs, cash_flow_growth=costs_growth)
         
-        rent = perpetuity(rent_amount, time_frame="M", cash_flow_growth=rent_growth)
+        rent = Perpetuity(rent_amount, time_frame="M", cash_flow_growth=rent_growth)
         
         present_value = -down_payment + mortgage.get_present_value(discount_rate) + maintenance.get_present_value(discount_rate) + rent.get_present_value(discount_rate)
         
@@ -111,24 +111,24 @@ class App:
         
     def calculate_price_of_property(self):
         down_payment = float(self.down_payment.get())
-        discount_rate = interest_rate(float(self.discount_rate.get()))
-        mortgage_rate = interest_rate(float(self.mortgage_rate.get()))
+        discount_rate = InterestRate(float(self.discount_rate.get()))
+        mortgage_rate = InterestRate(float(self.mortgage_rate.get()))
         mortgage_length = int(self.mortgage_length.get())
         rent_amount = float(self.rent_amount.get())
-        rent_growth = interest_rate(float(self.rent_growth.get()))
+        rent_growth = InterestRate(float(self.rent_growth.get()))
         maintenance_costs = float(self.maintenance_cost.get())
-        costs_growth = interest_rate(float(self.costs_growth.get()))
+        costs_growth = InterestRate(float(self.costs_growth.get()))
         
         
         number_mortgage_payments = mortgage_length*12
         
-        maintenance = perpetuity(-maintenance_costs, cash_flow_growth=costs_growth)
+        maintenance = Perpetuity(-maintenance_costs, cash_flow_growth=costs_growth)
         
-        rent = perpetuity(rent_amount, time_frame="M", cash_flow_growth=rent_growth)
+        rent = Perpetuity(rent_amount, time_frame="M", cash_flow_growth=rent_growth)
         
         null_pv = maintenance.get_present_value(discount_rate) + rent.get_present_value(discount_rate) - down_payment
         maximum_payment = payment_annuity(null_pv, mortgage_rate.rate_in("M"), number_mortgage_payments)
-        price_of_property = round(annuity(maximum_payment, number_mortgage_payments, time_frame="M").get_present_value(discount_rate)+ down_payment)
+        price_of_property = round(Annuity(maximum_payment, number_mortgage_payments, time_frame="M").get_present_value(discount_rate)+ down_payment)
         
         self.result_label.configure(text=f'The Maximum Price of Property is: {price_of_property}')
 
