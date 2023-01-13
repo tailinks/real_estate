@@ -145,3 +145,23 @@ class Perpetuity(Annuity):
         return super().get_present_value(discount_rate)
 
 
+
+def payment_annuity(present_value: float, InterestRate: InterestRate, number_periods: int, time_frame: str="Y") -> float:
+    """
+    Calculates the payment of an annuity given the present value, rate, and number of periods.
+    
+    Parameters:
+    - present_value: the present value of the annuity
+    - InterestRate: the rate used to calculate payments
+    - number_periods: the number of periods over which the payments will be made
+    - time_frame (str): the time frame of the interest rate. Must be one of "Y", "M", "W", "D"
+    Raises:
+    - Exception: if time_frame is not one of "Y", "M", "W", "D"
+    
+    
+    Returns: the payment of the annuity
+    """
+    if time_frame not in time_frames:
+            raise Exception("Time frame must be Y/M/W/D")
+    payment = (InterestRate.rate_in(time_frame) * present_value) / (1 - (1 + InterestRate.rate_in(time_frame)) ** -number_periods)
+    return payment

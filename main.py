@@ -1,4 +1,3 @@
-from finance_calculator import *
 from cash_flows import *
 import tkinter as tk
 from cash_flows import *
