@@ -31,7 +31,7 @@ class cash_flow:
     
     
 class annuity:
-    def __init__(self, amount: float, payments: float, time_frame = "Y") -> None:
+    def __init__(self, amount: float, payments: float, time_frame = "Y", cash_flow_growth = interest_rate(0)) -> None:
         if time_frame not in time_frames:
             raise Exception("Time frame must be Y/M/W/D")
         self.amount = amount
@@ -39,7 +39,7 @@ class annuity:
         self.time_frame = time_frame
         self.cash_flows = []
         for n in range(1, payments + 1): 
-            self.cash_flows.append(cash_flow(self.amount, n, time_frame))
+            self.cash_flows.append(cash_flow(self.amount * (1 + cash_flow_growth.rate_in(time_frame)) ** n, n, time_frame))
             
     def get_present_value(self, discount_rate: interest_rate):
         sum_present_value = 0
@@ -49,6 +49,6 @@ class annuity:
         return round(sum_present_value, 2)
 
 class perpetuity(annuity):
-    def __init__(self, amount: float, time_frame="Y") -> None:
-        super().__init__(amount, 1000 * time_frame_conversion[time_frame], time_frame)
+    def __init__(self, amount: float, time_frame="Y", cash_flow_growth = interest_rate(0)) -> None:
+        super().__init__(amount, 1000 * time_frame_conversion[time_frame], time_frame, cash_flow_growth= cash_flow_growth)
     

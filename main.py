@@ -1,4 +1,5 @@
 from finance_calculator import *
+from cash_flows import *
 import tkinter as tk
 from cash_flows import *
 from tkinter import ttk
@@ -83,60 +84,51 @@ class App:
     def calculate_present_value(self):
         property_price = float(self.property_price.get())
         down_payment = float(self.down_payment.get())
-        discount_rate = float(self.discount_rate.get())
-        mortgage_rate = float(self.mortgage_rate.get())
-        mortgage_length = float(self.mortgage_length.get())
+        discount_rate = interest_rate(float(self.discount_rate.get()))
+        mortgage_rate = interest_rate(float(self.mortgage_rate.get()))
+        mortgage_length = int(self.mortgage_length.get())
         rent_amount = float(self.rent_amount.get())
-        rent_growth = float(self.rent_growth.get())
+        rent_growth = interest_rate(float(self.rent_growth.get()))
         maintenance_costs = float(self.maintenance_cost.get())
-        costs_growth = float(self.costs_growth.get())
+        costs_growth = interest_rate(float(self.costs_growth.get()))
         
          #Do the calculations and store the result
-        monthly_discount_rate = rate_conversion(discount_rate, 12)
-        mortgage_rate = rate_conversion(mortgage_rate, 12)
-        number_periods = mortgage_length*12
         
-        mortgage_payment = payment_annuity(property_price-down_payment, mortgage_rate, number_periods)
-        present_value_mortgage = present_value_annuity(-mortgage_payment, monthly_discount_rate, number_periods)
+        number_periods_mortgage = mortgage_length*12
         
-        present_value_maintenance = present_value_perpertuity(-maintenance_costs, discount_rate, growing=True, growth_rate=costs_growth)
+        mortgage_payment = payment_annuity(property_price-down_payment, mortgage_rate.rate_in("M"), number_periods_mortgage)
+        mortgage = annuity(-mortgage_payment, number_periods_mortgage,time_frame="M", )
         
-        rent_growth_monthly = rate_conversion(rent_growth, 12)
+        maintenance = perpetuity(-maintenance_costs, cash_flow_growth=costs_growth)
         
-        present_value_rent = present_value_perpertuity(rent_amount, monthly_discount_rate, growing=True, growth_rate=rent_growth_monthly)
+        rent = perpetuity(rent_amount, time_frame="M", cash_flow_growth=rent_growth)
         
-        present_value = round(present_value_mortgage + present_value_maintenance + present_value_rent - down_payment)
-        
+        present_value = -down_payment + mortgage.get_present_value(discount_rate) + maintenance.get_present_value(discount_rate) + rent.get_present_value(discount_rate)
         
         #display result in a message box
         messagebox.showinfo("Present Value", "The present value of the real estate project is ${:.2f}".format(present_value))
 
         
     def calculate_price_of_property(self):
-        discount_rate = float(self.discount_rate.get())
         down_payment = float(self.down_payment.get())
-        rent_amount = float(self.rent_amount.get())
-        rent_growth = float(self.rent_growth.get())
-        maintenance_costs = float(self.maintenance_cost.get())
-        costs_growth = float(self.costs_growth.get())
-        mortgage_rate = float(self.mortgage_rate.get())
+        discount_rate = interest_rate(float(self.discount_rate.get()))
+        mortgage_rate = interest_rate(float(self.mortgage_rate.get()))
         mortgage_length = int(self.mortgage_length.get())
+        rent_amount = float(self.rent_amount.get())
+        rent_growth = interest_rate(float(self.rent_growth.get()))
+        maintenance_costs = float(self.maintenance_cost.get())
+        costs_growth = interest_rate(float(self.costs_growth.get()))
         
         
-        monthly_discount_rate = rate_conversion(discount_rate, 12)
-        mortgage_rate = rate_conversion(mortgage_rate, 12)
-        number_periods = mortgage_length*12
+        number_mortgage_payments = mortgage_length*12
         
-        present_value_maintenance = present_value_perpertuity(-maintenance_costs, discount_rate, growing=True, growth_rate=costs_growth)
+        maintenance = perpetuity(-maintenance_costs, cash_flow_growth=costs_growth)
         
-        rent_growth_monthly = rate_conversion(rent_growth, 12)
+        rent = perpetuity(rent_amount, time_frame="M", cash_flow_growth=rent_growth)
         
-        present_value_rent = present_value_perpertuity(rent_amount, monthly_discount_rate, growing=True, growth_rate=rent_growth_monthly)
-        
-        
-        null_pv = present_value_maintenance + present_value_rent - down_payment
-        maximum_payment = payment_annuity(null_pv, monthly_discount_rate, number_periods)
-        price_of_property = round(present_value_annuity(maximum_payment, mortgage_rate, number_periods) + down_payment)
+        null_pv = maintenance.get_present_value(discount_rate) + rent.get_present_value(discount_rate) - down_payment
+        maximum_payment = payment_annuity(null_pv, mortgage_rate.rate_in("M"), number_mortgage_payments)
+        price_of_property = round(annuity(maximum_payment, number_mortgage_payments, time_frame="M").get_present_value(discount_rate)+ down_payment)
         
         self.result_label.configure(text=f'The Maximum Price of Property is: {price_of_property}')
 
