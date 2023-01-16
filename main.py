@@ -95,7 +95,7 @@ class App:
         
         number_periods_mortgage = mortgage_length*12
         
-        mortgage_payment = payment_annuity(property_price-down_payment, mortgage_rate.rate_in("M"), number_periods_mortgage)
+        mortgage_payment = payment_annuity(property_price-down_payment, mortgage_rate, number_periods_mortgage)
         mortgage = Annuity(-mortgage_payment, number_periods_mortgage,time_frame="M", )
         
         maintenance = Perpetuity(-maintenance_costs, cash_flow_growth=costs_growth)
@@ -126,7 +126,7 @@ class App:
         rent = Perpetuity(rent_amount, time_frame="M", cash_flow_growth=rent_growth)
         
         null_pv = maintenance.get_present_value(discount_rate) + rent.get_present_value(discount_rate) - down_payment
-        maximum_payment = payment_annuity(null_pv, mortgage_rate.rate_in("M"), number_mortgage_payments)
+        maximum_payment = payment_annuity(null_pv, mortgage_rate, number_mortgage_payments)
         price_of_property = round(Annuity(maximum_payment, number_mortgage_payments, time_frame="M").get_present_value(discount_rate)+ down_payment)
         
         self.result_label.configure(text=f'The Maximum Price of Property is: {price_of_property}')

@@ -79,7 +79,7 @@ class Annuity:
     """
     A class that represents an annuity.
     """
-    def init(self, amount: float, payments: float, time_frame: str = "Y", cash_flow_growth: InterestRate = InterestRate(0)) -> None:
+    def __init__(self, amount: float, payments: float, time_frame: str = "Y", cash_flow_growth: InterestRate = InterestRate(0)) -> None:
         """
         Initializes an Annuity object with an amount, number of payments, time frame, and cash flow growth rate.
         Args:
@@ -120,7 +120,7 @@ class Perpetuity(Annuity):
     """
     A class that represents a perpetuity.
     """
-    def init(self, amount: float, time_frame: str = "Y", cash_flow_growth: InterestRate = InterestRate(0)) -> None:
+    def __init__(self, amount: float, time_frame: str = "Y", cash_flow_growth: InterestRate = InterestRate(0)) -> None:
         """
         Initializes a Perpetuity object with an amount, time frame, and cash flow growth rate
         Args:
@@ -130,7 +130,7 @@ class Perpetuity(Annuity):
         Raises:
         - Exception: if time_frame is not one of "Y", "M", "W", "D"
         """
-        super().init(amount, 1000 * time_frame_conversion[time_frame], time_frame, cash_flow_growth= cash_flow_growth)
+        super().__init__(amount, 1000 * time_frame_conversion[time_frame], time_frame, cash_flow_growth= cash_flow_growth)
         
     # Overriding the get_present_value method to mention it is for perpetuity
     def get_present_value(self, discount_rate: InterestRate) -> float:
@@ -166,4 +166,3 @@ def payment_annuity(present_value: float, InterestRate: InterestRate, number_per
             raise Exception("Time frame must be Y/M/W/D")
     payment = (InterestRate.rate_in(time_frame) * present_value) / (1 - (1 + InterestRate.rate_in(time_frame)) ** -number_periods)
     return payment
-

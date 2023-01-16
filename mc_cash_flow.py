@@ -1,7 +1,7 @@
 from cash_flows import *
 from random import random
 
-class MonteCarloCashFlow(CashFlow):
+class MonteCarloCashFlow():
     def __init__(self, amount: float, receivable_in: float, time_frame: str = "Y", chance_of_zero: float = 0) -> None:
         """
         Initializes a MonteCarloCashFlow object with an amount, a time frame, the number of periods until receipt, and a chance of the amount being zero.
@@ -41,8 +41,8 @@ class MonteCarloCashFlow(CashFlow):
             present_value = self.amount / (1 + discount_rate.rate_in(self.time_frame)) ** (self.receivable_in)
             return present_value
 
-class MonteCarloAnnuity(Annuity):
-    def init(self, amount: float, payments: float, time_frame: str = "Y", cash_flow_growth: InterestRate = InterestRate(0), chance_of_zero: float = 0) -> None:
+class MonteCarloAnnuity():
+    def __init__(self, amount: float, payments: float, time_frame: str = "Y", cash_flow_growth: InterestRate = InterestRate(0), chance_of_zero: float = 0) -> None:
         """
         Initializes a MonteCarloAnnuity object with an amount, number of payments, time frame, cash flow growth rate, and chance of zero for each cash flow.
         
@@ -69,7 +69,7 @@ class MonteCarloAnnuity(Annuity):
             self.cash_flows.append(MonteCarloCashFlow(self.amount * (1 + cash_flow_growth.rate_in(time_frame)) ** n, n, time_frame, chance_of_zero))
 
 class MonteCarloPerpetuity(MonteCarloAnnuity):
-    def init(self, amount: float, time_frame: str = "Y", cash_flow_growth: InterestRate = InterestRate(0), chance_of_zero: float = 0) -> None:
+    def __init__(self, amount: float, time_frame: str = "Y", cash_flow_growth: InterestRate = InterestRate(0), chance_of_zero: float = 0) -> None:
         """
         Initializes a MonteCarloPerpetuity object with an amount, time frame, cash flow growth rate, and chance of zero for each cash flow.
         
@@ -83,4 +83,4 @@ class MonteCarloPerpetuity(MonteCarloAnnuity):
         - Exception: if time_frame is not one of "Y", "M", "W", "D"
         - ValueError: if chance_of_zero is not between 0 and 1
         """
-        super().init(amount, 1000 * time_frame_conversion[time_frame], time_frame, cash_flow_growth= cash_flow_growth, chance_of_zero = chance_of_zero)
+        super().__init__(amount, 1000 * time_frame_conversion[time_frame], time_frame, cash_flow_growth= cash_flow_growth, chance_of_zero = chance_of_zero)
