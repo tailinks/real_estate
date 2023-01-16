@@ -115,6 +115,7 @@ class Annuity:
             sum_present_value += n.get_present_value(discount_rate)
                 
         return round(sum_present_value, 2)
+    
 class Perpetuity(Annuity):
     """
     A class that represents a perpetuity.
@@ -165,3 +166,4 @@ def payment_annuity(present_value: float, InterestRate: InterestRate, number_per
             raise Exception("Time frame must be Y/M/W/D")
     payment = (InterestRate.rate_in(time_frame) * present_value) / (1 - (1 + InterestRate.rate_in(time_frame)) ** -number_periods)
     return payment
+
