@@ -67,7 +67,23 @@ class MonteCarloAnnuity():
         self.cash_flows = []
         for n in range(1, payments + 1): 
             self.cash_flows.append(MonteCarloCashFlow(self.amount * (1 + cash_flow_growth.rate_in(time_frame)) ** n, n, time_frame, chance_of_zero))
-
+    
+    def get_present_value(self, discount_rate: InterestRate) -> float:
+        """
+        Calculates the present value of the annuity using the given discount rate.
+        
+        Args:
+        - discount_rate (InterestRate): the discount rate to use for calculating the present value
+        
+        Returns:
+        - float: the present value of the annuity
+        """
+        sum_present_value = 0
+        for n in self.cash_flows:
+            sum_present_value += n.get_present_value(discount_rate, )
+                
+        return round(sum_present_value, 2)
+    
 class MonteCarloPerpetuity(MonteCarloAnnuity):
     def __init__(self, amount: float, time_frame: str = "Y", cash_flow_growth: InterestRate = InterestRate(0), chance_of_zero: float = 0) -> None:
         """
